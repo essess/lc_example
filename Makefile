@@ -1,18 +1,19 @@
-src = lc.c
+src = $(wildcard *.c)
 obj = $(src:.c=.o)
 dep = $(obj:.o=.d)
 
 CC  = gcc
 CPP = g++
 
-LDFLAGS =
-CFLAGS  = -Wall -g3
+LDFLAGS = -L/usr/local/lib
+LDLIBS  = -lwiringPi -lwiringPiDev -lpthread -lm -lcrypt -lrt
 
-liblc.a: $(obj)
-	ar rcs $@ $^
+INCLUDE = -I/usr/local/include
+DEBUG   = -g -O0
+CFLAGS  = $(DEBUG) -Wall $(INCLUDE)
 
-lc: $(obj)
-	$(CC) -c -o $@ $^ $(LDFLAGS)
+lc_example: $(obj)
+	$(CC) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
 -include $(dep)
 %.d: %.c
@@ -20,4 +21,4 @@ lc: $(obj)
 
 .PHONY: clean
 clean:
-	rm -f $(obj) $(dep) liblc.a
+	rm -f $(obj) $(dep) lc_example
